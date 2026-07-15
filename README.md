@@ -1,246 +1,135 @@
-# Mass Effect 1 – kompletní česká lokalizace pro Xbox 360
+# Mass Effect 1 – čeština a volitelné mody pro Xbox 360
 
-Tento návod popisuje vytvoření kompletní české lokalizace z vlastních čistých souborů. Výsledkem je překlad základní hry a obou DLC:
+Tento balíček z vlastních čistých herních souborů sestaví:
 
-- základní hra včetně menu, kodexu, deníku, dialogů, dialogových voleb, meziscén a hlášek členů družstva,
-- **Bring Down the Sky / Strhnout oblohu**,
-- **Pinnacle Station / Stanice Pinnacle**.
+- kompletní český překlad základní hry,
+- české DLC **Strhnout oblohu** a **Stanice Pinnacle**,
+- volitelně **Romance stejného pohlaví**,
+- volitelně **Spasitele Virmiru**.
 
-Konverze je určena pro konzole Xbox 360 s RGH/JTAG. Nepoužívá Title Update a nemění `default.xex`.
+Patcher neobsahuje hotové upravené Xbox mapy ani hotové herní DLC kontejnery. Všechny velké herní soubory vznikají až lokálně z uživatelových vstupů. Balíček obsahuje původní zdrojové archivy obou modů a kompatibilní sestavu Legendary Exploreru, aby pro volitelné převody nebylo nutné stahovat další nástroje.
 
-## Podporovaná verze
+Projekt je určen pro Xbox 360 s RGH/JTAG, Title ID `4D5307E8`, Media ID `572BA75D`, TU0. Neupravuje `default.xex` a nevyžaduje Title Update.
 
-| Položka | Hodnota |
-|---|---|
-| Title ID | `4D5307E8` |
-| Media ID | `572BA75D` |
-| XEX version | `5` / TU0 |
-| SHA-256 referenčního `default.xex` | `4beb582540010b25032e3a51e4ce84a6fb1a9f381adddd8b2def0dc5d6bf715d` |
+## Zdroje a poděkování
 
-Jiná edice nebo již upravené herní soubory nemusí být kompatibilní. Konvertor neznámé vstupy odmítne, místo aby vytvořil potenciálně nefunkční výstup.
+- Původní česká lokalizace Mass Effect 1: **CD Projekt** – [domovská stránka překladu](https://prekladyher.eu/preklady/mass-effect-1.329/).
+- [Same-Gender Romances for ME1](https://www.nexusmods.com/masseffect/mods/80), autor **rondeeno**, zdrojová verze 4.1.1.
+- [Virmire Savior Mod (LE1)](https://www.nexusmods.com/masseffectlegendaryedition/mods/1212), autor **Vegz**, zdrojová verze 2.03 bez závislosti na LE1 Community Patchi.
+- [Legendary Explorer](https://github.com/ME3Tweaks/LegendaryExplorer), projekt **ME3Tweaks**; v balíčku je kompatibilní runtime použitý převodními skripty.
 
-## Co budete potřebovat
+Romance port zahrnuje volby `Same-Gender LI Activates Beacon` a `NPCs Flirt Regardless of Gender`. Oprava scény u majáku odpovídá novější variantě modu: Ashleyina chybná replika „Don't touch her“ se v mužské Kaidanově větvi nepřehraje.
 
-1. Windows 10 nebo Windows 11 v 64bitové verzi.
-2. 64bitový Python 3 dostupný v systémové proměnné `PATH`.
-3. Čistou rozbalenou Xbox 360 verzi Mass Effect 1.
-4. PC instalaci Mass Effect 1 s aplikovanou českou lokalizací.
-5. Originální funkční Xbox 360 kontejner DLC Bring Down the Sky.
-6. Originální funkční Xbox 360 kontejner DLC Pinnacle Station.
-7. Alespoň přibližně 8 GB volného místa pro pracovní a výsledné soubory.
+## Co musí dodat uživatel
 
-Potřebné části PC instalace nejsou součástí repozitáře. Skript z nich načte české dialogové tabulky a vytvoří Xbox variantu. Použijte vlastní legálně získanou instalaci hry.
+1. Čistou rozbalenou Xbox 360 verzi Mass Effect 1.
+2. PC instalaci původního Mass Effect 1 s aplikovanou češtinou.
+3. Neupravený Xbox 360 kontejner DLC Bring Down the Sky.
+4. Neupravený Xbox 360 kontejner DLC Pinnacle Station.
+5. Při volbě Spasitele Virmiru také čistou instalaci ME1 Legendary Edition.
+6. Windows 10/11, 64bitový Python 3 a .NET runtime.
+7. Přibližně 10 GB volného místa pro mezisoubory a výsledky.
 
-## Příprava vstupů
+Přibalené archivy v `source_mods` se rozbalují automaticky. Patcher používá systémový `tar.exe`, který je součástí podporovaných verzí Windows.
 
-### Čistá Xbox 360 hra
+## Podoba vstupů
 
-Připravte lokálně dostupný adresář s rozbalenou hrou. V jeho kořeni musí být `default.xex` a následující struktura:
+Kořen čisté Xbox hry musí obsahovat alespoň:
 
 ```text
 Mass Effect 1/
 ├── default.xex
 └── Layer0/
     ├── Maps/
-    └── MEInit/
-        └── GlobalTlk.xxx
+    └── MEInit/GlobalTlk.xxx
 ```
 
-Nepoužívejte kopii, do které už byla nahrána starší verze češtiny. Pokud jste hru dříve upravovali, nejprve obnovte původní anglické soubory.
+PC cesta musí vést ke kompletní instalaci obsahující `BioGame/CookedPC/Maps` a české balíčky `.upk`. LE1 cesta může mířit na kořen Legendary Edition, `Game/ME1` nebo přímo `Game/ME1/BioGame`; skript si čistý `CookedPCConsole` najde.
 
-### Česká PC instalace
+Všechny vstupy musí být čisté. Nepoužívejte Xbox kopii, do které už byla zapsána starší čeština nebo některý z těchto modů.
 
-Zadejte kořen celé počeštěné PC hry, například:
+## Automatické sestavení
 
-```text
-D:\Program Files (x86)\Mass Effect
-```
-
-Skript prohledává podadresáře rekurzivně. Cesta proto musí vést ke skutečné instalaci obsahující české soubory `.upk`, nikoli pouze k instalačnímu programu češtiny.
-
-### Originální DLC
-
-Připravte dva neupravené STFS soubory, které původní hra na Xboxu správně rozpozná:
-
-- Bring Down the Sky,
-- Pinnacle Station.
-
-Použijte přímo soubory DLC, nikoli ZIP archiv. V cílovém adresáři během testování nenechávejte více různých variant stejného DLC.
-
-## Automatická konverze
-
-Nejjednodušší způsob je spustit:
+Spusťte:
 
 ```text
 Rebuild_ME1_CZ_From_Clean.bat
 ```
 
-Postupně zadejte:
+Průvodce se zeptá na čtyři povinné vstupy a na oba volitelné mody. Cestu k LE1 vyžádá jen při zapnutí Spasitele Virmiru.
 
-1. cestu ke kořeni čisté Xbox 360 hry,
-2. cestu ke kořeni počeštěné PC hry,
-3. cestu k originálnímu Bring Down the Sky,
-4. cestu k originálnímu Pinnacle Station.
-
-Pokročilé spuštění z PowerShellu:
+Pokročilé spuštění:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File ".\tools\Rebuild_ME1_CZ_From_Clean.ps1" `
   -GamePath "D:\Xbox Games\Mass Effect 1 Clean" `
-  -PcCzechPath "D:\Program Files (x86)\Mass Effect" `
+  -PcCzechPath "D:\Games\Mass Effect PC CZ" `
   -BDtSContainer "D:\ME1 DLC Original\BringDownTheSky" `
   -PinnacleContainer "D:\ME1 DLC Original\PinnacleStation" `
-  -OutputPath "D:\ME1_CZ_Rebuilt"
+  -SameGenderRomances `
+  -VirmireSavior `
+  -Le1Path "C:\Program Files\EA Games\Mass Effect Legendary Edition" `
+  -OutputPath "D:\ME1_X360_Rebuilt"
 ```
 
-Konverze zpracovává 297 velkých mapových a dialogových balíčků, takže může trvat delší dobu. Vstupní soubory se nemění; vše vzniká v novém výstupním adresáři.
+Přepínače `-SameGenderRomances` a `-VirmireSavior` jsou nezávislé. Když jsou zvoleny oba, Spasitel Virmiru se sestaví nad romance mapami, takže se změny v překrývajících se mapách zachovají.
 
-## Co konvertor provede
+## Co patcher provede
 
-1. Z původního Xbox `GlobalTlk.xxx` a českých PC dat vytvoří globální českou tabulku.
-2. Znovu sestaví 223 dialogových balíčků základní hry.
-3. Znovu sestaví 74 balíčků meziscén a ambientních hlášek.
-4. Vytvoří české globální i lokální texty pro Bring Down the Sky.
-5. Vytvoří české globální i lokální texty pro Pinnacle Station.
-6. Z originálních DLC postaví nové STFS kontejnery a přepočítá jejich L0/L1/L2 hashe, root hash a Content ID.
-7. Porovná soubory základní hry s hardwarově ověřenými referenčními hashi.
+1. Vytvoří český `GlobalTlk.xxx` základní hry.
+2. Z české PC instalace sestaví české Xbox dialogy, dialogové volby, meziscény a hlášky.
+3. Z obou původních Xbox DLC vytvoří nové české STFS kontejnery a přepočítá jejich hashové tabulky a Content ID.
+4. U romance modu porovná přibalený PC mod s čistými PC mapami a změny přenese do čerstvě sestavených českých Xbox map.
+5. U Spasitele Virmiru porovná přibalenou verzi 2.03 s čistou LE1 a změny přenese do odpovídajících původních Xbox map.
+6. Pro každý volitelný mod postaví malé samostatné podpůrné DLC z uživatelova originálního BDtS kontejneru; mapy v něm nejsou duplikované.
 
-Pokud některá kontrola selže, výstup nepoužívejte na konzoli.
-
-## Výsledná struktura
-
-Při výchozím nastavení vznikne adresář `rebuilt_output`:
+## Výstup
 
 ```text
 rebuilt_output/
-├── 01_Base_Game_CZ/
-│   ├── GameFiles/
-│   │   └── Layer0/...
-│   └── rebuild_report.json
-├── 02_Bring_Down_the_Sky_CZ/
-│   ├── <nový Content ID>
-│   └── validation.json
-├── 03_Pinnacle_Station_CZ/
-│   ├── <nový Content ID>
-│   └── validation.json
+├── 01_Base_Game_CZ/GameFiles/Layer0/...
+├── 02_Bring_Down_the_Sky_CZ/<Content ID>
+├── 03_Pinnacle_Station_CZ/<Content ID>
+├── 04_Same_Gender_Romances_CZ/          # volitelné
+│   ├── GameFiles/Layer0/Maps/
+│   └── DLC/<Content ID>
+├── 05_Virmire_Savior_CZ/                # volitelné
+│   ├── GameFiles/Layer0/Maps/
+│   └── DLC/<Content ID>
+├── optional_mods_validation.json
 └── _build/
 ```
 
-Adresář `_build` obsahuje mezivýsledky a po úspěšné instalaci jej můžete odstranit.
+`_build` obsahuje pracovní soubory a po úspěšném testu jej lze smazat. Vstupní adresáře patcher nemění.
 
-Při přesně podporovaných vstupech odpovídají finální ověřené soubory těmto hodnotám:
+## Instalace na Xbox 360
 
-| Součást | Soubor / SHA-256 |
-|---|---|
-| Základní `GlobalTlk.xxx` | `47363c769e9b3ea261043e2cd9b138e1f52a74510b468ceec6a8a132cdb60604` |
-| Strhnout oblohu | `863D1AB3C3C6072258A79ED0EC691652BD40DAB9` |
-| Stanice Pinnacle | `554124CF0573A1E51962C116BFB20D96C57983A4` |
-
-Content ID je odvozen z výsledného STFS kontejneru. Pokud se výsledný název nebo validační hash liší, zkontrolujte vstupní DLC a nepokračujte v instalaci.
-
-## Instalace základní hry
-
-1. Zazálohujte celý adresář hry na Xboxu.
-2. Obsah adresáře:
+1. Zálohujte celou hru a původní DLC.
+2. Obsah `01_Base_Game_CZ/GameFiles` zkopírujte do kořene hry.
+3. Pokud jste sestavili romance mod, poté zkopírujte jeho `GameFiles` do kořene hry.
+4. Pokud jste sestavili Spasitele Virmiru, zkopírujte jeho `GameFiles` jako poslední.
+5. Soubory bez přípony z adresářů `02_...`, `03_...` a volitelných `DLC` nahrajte do:
 
    ```text
-   rebuilt_output\01_Base_Game_CZ\GameFiles\
+   Hdd1:\Content\0000000000000000\4D5307E8\00000002\
    ```
 
-   zkopírujte se zachováním struktury do:
+6. V `00000002` nenechávejte staré nebo duplicitní varianty stejných DLC.
+7. Konzoli úplně vypněte a znovu zapněte.
 
-   ```text
-   Hdd1:\Games\Mass Effect 1\
-   ```
+Do `Layer0/MEInit` ručně nekopírujte nic kromě souborů vytvořených základní českou částí. Volitelné mody používají mapové patche a vlastní malé podpůrné DLC.
 
-3. Potvrďte přepsání odpovídajících souborů.
+## Kontrola a řešení problémů
 
-Nepřepisujte ani neupravujte:
-
-- `default.xex`,
-- `Layer0\MEInit\Coalesced.ini`,
-- `Layer0\MEInit\GlobalTlk_PL.xxx`.
-
-## Instalace DLC
-
-Finální soubor z každého z těchto adresářů:
-
-```text
-rebuilt_output\02_Bring_Down_the_Sky_CZ\
-rebuilt_output\03_Pinnacle_Station_CZ\
-```
-
-nahrajte do:
-
-```text
-Hdd1:\Content\0000000000000000\4D5307E8\00000002\
-```
-
-Od každého DLC ponechte v cílovém adresáři pouze jednu variantu. Starší testovací nebo původní kopii stejného DLC před spuštěním hry přesuňte mimo adresář `00000002`.
-
-Po instalaci konzoli úplně vypněte a znovu zapněte.
-
-## Ověření ve hře
-
-Po spuštění zkontrolujte:
-
-1. české hlavní menu, kodex a deník,
-2. české titulky a dialogové volby v nové i uložené hře,
-3. titulky meziscén a krátkých hlášek členů družstva,
-4. viditelnost obou DLC v nabídce stažitelného obsahu,
-5. české názvy a celé popisy obou DLC,
-6. načtení misí Strhnout oblohu a Stanice Pinnacle bez pádu hry.
-
-## Řešení problémů
-
-### Python nebyl nalezen
-
-Nainstalujte 64bitový Python 3 a při instalaci aktivujte volbu **Add Python to PATH**. Potom zavřete a znovu otevřete příkazový řádek.
-
-### Chybí LZO runtime
-
-Soubor `work\minilzo-2.10\lzo2.dll` je přiložen. Zkontrolujte, zda jej neodstranil antivirus a zda spouštíte 64bitový Python.
-
-### Unsupported source nebo neodpovídá vstupní hash
-
-Zadaná Xbox hra není čistá podporovaná verze. Obnovte původní soubory se správným Media ID. Nevynucujte pokračování s jinou verzí.
-
-### PC package nebyl nalezen
-
-Cesta nevede ke kompletní počeštěné PC instalaci, případně v ní chybí české `.upk` soubory. Ověřte instalaci češtiny a zadejte kořen celé PC hry.
-
-### Výstup se neshoduje s hardwarově testovanou referencí
-
-Výstup neinstalujte. Zkontrolujte, že používáte čistou Xbox hru, správnou PC češtinu a originální DLC. Soubory neupravujte ručně mezi jednotlivými kroky.
-
-### Hra DLC nevidí
-
-Zkontrolujte Title ID, cílový adresář a to, že je v `00000002` skutečný výsledný soubor bez přípony. Odstraňte duplicitní varianty stejného DLC a restartujte konzoli.
-
-### Fatal Crash Intercepted při načítání DLC
-
-Nejčastější příčinou je neúplný FTP přenos, smíchané varianty DLC nebo použití mezisouboru z `_build`. Nahrajte pouze finální Content ID z adresářů `02_...` a `03_...` a ověřte velikost souboru po přenosu.
-
-## Obnova angličtiny
-
-Konvertor sám vstupní soubory nemění. Pro návrat hry do angličtiny vraťte zálohu původního adresáře hry a odstraňte české Content ID obou DLC. Bez předchozí zálohy základní hry není bezpečná automatická obnova možná.
-
-## Doporučená struktura repozitáře
-
-Celý obsah tohoto adresáře ponechte pohromadě:
-
-```text
-06_Rebuild_From_Clean_Originals/
-├── README.md
-├── Rebuild_ME1_CZ_From_Clean.bat
-├── recipes/
-├── tools/
-└── work/
-```
-
-Skripty používají relativní cesty. Nepřesouvejte samostatně pouze `.bat` nebo `.ps1` soubor bez podadresářů `recipes`, `tools` a `work`.
+- `Unsupported source` nebo nesouhlas hashů znamená nesprávnou či již upravenou Xbox verzi. Obnovte čisté soubory.
+- `PC package was not found` znamená neúplnou PC instalaci nebo chybnou cestu.
+- Chyba hledání `CookedPCConsole` znamená, že cesta k LE1 neobsahuje čistou instalaci ME1 Legendary Edition.
+- `Fatal Crash Intercepted` nejčastěji způsobí neúplný přenos, souběžně ponechaná stará varianta DLC nebo kopírování pracovního souboru místo finálního Content ID.
+- Výsledky a kontroly jsou zapsány ve `validation.json` a `optional_mods_validation.json`. Pokud kontrola selže, soubory na konzoli neinstalujte.
 
 ## Právní poznámka
 
-Projekt neposkytuje původní herní soubory. Pro sestavení musíte použít vlastní kopii Xbox 360 hry, vlastní PC instalaci s českou lokalizací a vlastní originální DLC. Výsledné upravené soubory používejte pouze v souladu s licencí hry a právními předpisy ve vaší zemi.
+Základní herní soubory, česká PC instalace, LE1 a původní Xbox DLC nejsou součástí balíčku a uživatel je musí dodat z vlastní legálně získané kopie.
+
+Původní mody a Legendary Explorer zůstávají dílem svých autorů.
