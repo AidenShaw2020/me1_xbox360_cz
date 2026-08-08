@@ -9,7 +9,16 @@ Tento balíček z vlastních čistých herních souborů sestaví:
 
 Patcher neobsahuje hotové upravené Xbox mapy ani hotové herní DLC kontejnery. Všechny velké herní soubory vznikají až lokálně z uživatelových vstupů. Balíček obsahuje původní zdrojové archivy obou modů a kompatibilní sestavu Legendary Exploreru, aby pro volitelné převody nebylo nutné stahovat další nástroje.
 
+Aktuální balíček patcheru je ke stažení v sekci [Releases](https://github.com/AidenShaw2020/me1_xbox360_cz/releases/latest).
+
 Projekt je určen pro Xbox 360 s RGH/JTAG, Title ID `4D5307E8`, Media ID `572BA75D`, TU0. Neupravuje `default.xex` a nevyžaduje Title Update.
+
+## Opravy ve verzi 9
+
+- Romance stejného pohlaví se nyní přenáší ve všech 16 příběhových mapách, nejen ve scéně u majáku a na ošetřovně.
+- Kaidanovy rozhovory po ošetřovně obsahují celé nové dialogové větve původního PC modu.
+- Citlivé mapy `06wake` a `07wake` používají úzký, hardwarově ověřený přenos Kismetu, který zachovává xboxovou strukturu balíku.
+- Při společném použití se Spasitelem Virmiru se jeho změny slučují po jednotlivých vlastnostech. Nepřepisují tedy Kaidanovy větve v pozdějších scénách, konfrontaci s Liarou ani závěrečné romanci.
 
 ## Zdroje a poděkování
 
@@ -81,7 +90,7 @@ Přepínače `-SameGenderRomances` a `-VirmireSavior` jsou nezávislé. Když js
 2. Z české PC instalace sestaví české Xbox dialogy, dialogové volby, meziscény a hlášky.
 3. Z obou původních Xbox DLC vytvoří nové české STFS kontejnery a přepočítá jejich hashové tabulky a Content ID.
 4. U romance modu porovná přibalený PC mod s čistými PC mapami a změny přenese do čerstvě sestavených českých Xbox map.
-5. U Spasitele Virmiru porovná přibalenou verzi 2.03 s čistou LE1 a změny přenese do odpovídajících původních Xbox map.
+5. U Spasitele Virmiru porovná přibalenou verzi 2.03 s čistou LE1 a změny sloučí s již upravenými Xbox mapami po jednotlivých vlastnostech, aby zachoval překrývající se romance větve.
 6. Pro každý volitelný mod postaví malé samostatné podpůrné DLC z uživatelova originálního BDtS kontejneru; mapy v něm nejsou duplikované.
 
 ## Výstup
@@ -126,6 +135,7 @@ Do `Layer0/MEInit` ručně nekopírujte nic kromě souborů vytvořených zákla
 - `PC package was not found` znamená neúplnou PC instalaci nebo chybnou cestu.
 - Chyba hledání `CookedPCConsole` znamená, že cesta k LE1 neobsahuje čistou instalaci ME1 Legendary Edition.
 - `Fatal Crash Intercepted` nejčastěji způsobí neúplný přenos, souběžně ponechaná stará varianta DLC nebo kopírování pracovního souboru místo finálního Content ID.
+- Při testu opravené větve použijte uloženou pozici před majákem nebo nejpozději před scénou na ošetřovně; novější save může mít uložený stav z předchozí chybné verze.
 - Výsledky a kontroly jsou zapsány ve `validation.json` a `optional_mods_validation.json`. Pokud kontrola selže, soubory na konzoli neinstalujte.
 
 ## Právní poznámka
